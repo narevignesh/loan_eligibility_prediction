@@ -1,4 +1,6 @@
 import pickle
+import pandas as pd
+
 
 def load_model_and_helpers():
     try:

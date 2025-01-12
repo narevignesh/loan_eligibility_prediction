@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
 from model import load_model_and_helpers
+import pandas as pd
+
 
 app = Flask(__name__)
 
