@@ -16,22 +16,28 @@ feature_columns = pickle.load(open("feature_columns.pkl", "rb"))
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.get_json()
-    df = pd.DataFrame([data])
+    df = pd.DataFrame(data)
+    
+    # One-hot encoding
     df = pd.get_dummies(df)
+
+    # Align the columns of the prediction data with the model's expected feature columns
     missing_cols = set(feature_columns) - set(df.columns)
     for col in missing_cols:
         df[col] = 0
+
+    # Ensure that the feature columns are in the correct order
     df = df[feature_columns]
+
+    # Scaling the data
     scaled_data = scaler.transform(df)
 
-    logistic_pred = logistic_model.predict(scaled_data)
+    # Model predictions
     random_forest_pred = random_forest_model.predict(scaled_data)
-    gradient_boosting_pred = gradient_boosting_model.predict(scaled_data)
 
+    # Prepare the response
     response = {
-
         "LOAN STATUS": label_encoder.inverse_transform(random_forest_pred)[0],
-
     }
 
     return jsonify(response)
