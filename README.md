@@ -1,4 +1,3 @@
-
 ---
 
 ## Model Description  
@@ -23,13 +22,15 @@ The model predicts whether the loan will be **approved** or **not approved** usi
 - `Y`: Loan approved  
 - `N`: Loan not approved  
 
----
+You can test the model by sending a request to the following endpoint:
 
-## Test Input Example  
+[https://loan-eligibility-prediction-j102.onrender.com/predict](https://loan-eligibility-prediction-j102.onrender.com/predict)
+
+### Test Input Example  
 The following is an example JSON input used to test the model:  
 
 ```json  
-{  
+[{  
     "Gender": "Male",  
     "Married": "Yes",  
     "Dependents": "0",  
@@ -41,7 +42,7 @@ The following is an example JSON input used to test the model:
     "Loan_Amount_Term": 360.0,  
     "Credit_History": 0.0,  
     "Property_Area": "Urban"  
-}  
+} ] 
 ```  
 
 The model processes this input to predict whether the loan application will be approved or not.  
@@ -56,3 +57,4 @@ The model processes this input to predict whether the loan application will be a
 5. **Generalization**: The model may not generalize well to data that significantly deviates from the training dataset.  
 
 ---
+
