@@ -1,37 +1,40 @@
 from flask import Flask, request, jsonify
-from model import load_model_and_helpers
+import pickle
+import numpy as np
 import pandas as pd
-
 
 app = Flask(__name__)
 
-# Load model and helpers
-model, scaler, label_encoder = load_model_and_helpers()
-
-@app.route("/")
-def home():
-    return jsonify({"message": "Loan Eligibility Prediction API is running!"})
+# Load models and preprocessing tools
+logistic_model = pickle.load(open("logistic_model.pkl", "rb"))
+random_forest_model = pickle.load(open("random_forest_model.pkl", "rb"))
+gradient_boosting_model = pickle.load(open("gradient_boosting_model.pkl", "rb"))
+label_encoder = pickle.load(open("label_encoder.pkl", "rb"))
+scaler = pickle.load(open("scaler.pkl", "rb"))
+feature_columns = pickle.load(open("feature_columns.pkl", "rb"))
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    try:
-        data = request.get_json()
-        if not isinstance(data, list):
-            return jsonify({"error": "Input should be a list of records"}), 400
-        
-        # Transform input data
-        input_df = pd.DataFrame(data)
-        input_encoded = pd.get_dummies(input_df, drop_first=True)
-        input_scaled = scaler.transform(input_encoded)
-        
-        # Ensure all columns match training data
-        prediction = model.predict(input_scaled)
-        prediction_decoded = label_encoder.inverse_transform(prediction)
+    data = request.get_json()
+    df = pd.DataFrame([data])
+    df = pd.get_dummies(df)
+    missing_cols = set(feature_columns) - set(df.columns)
+    for col in missing_cols:
+        df[col] = 0
+    df = df[feature_columns]
+    scaled_data = scaler.transform(df)
 
-        # Respond with predictions
-        return jsonify({"predictions": prediction_decoded.tolist()})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    logistic_pred = logistic_model.predict(scaled_data)
+    random_forest_pred = random_forest_model.predict(scaled_data)
+    gradient_boosting_pred = gradient_boosting_model.predict(scaled_data)
+
+    response = {
+
+        "LOAN STATUS": label_encoder.inverse_transform(random_forest_pred)[0],
+
+    }
+
+    return jsonify(response)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(debug=True)
