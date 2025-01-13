@@ -1,7 +1,7 @@
 ---
 
 ## Model Description  
-This project leverages a **Random Forest Classifier** to predict the approval status of loan applications based on customer data. The model was trained using a dataset of loan records with features related to applicant demographics, financial information, and loan-related attributes.  
+This project leverages a **Logistic Regression Classifier** to predict the approval status of loan applications based on customer data. The model was trained using a dataset of loan records with features related to applicant demographics, financial information, and loan-related attributes.  
 
 ### Features  
 The model uses the following features:  
@@ -21,6 +21,8 @@ The model uses the following features:
 The model predicts whether the loan will be **approved** or **not approved** using the following labels:  
 - `Y`: Loan approved  
 - `N`: Loan not approved  
+
+The model achieved an accuracy of **80%** on the test dataset.
 
 You can test the model by sending a request to the following endpoint:
 
@@ -57,4 +59,3 @@ The model processes this input to predict whether the loan application will be a
 5. **Generalization**: The model may not generalize well to data that significantly deviates from the training dataset.  
 
 ---
-
